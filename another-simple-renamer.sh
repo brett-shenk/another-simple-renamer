@@ -13,14 +13,14 @@
 # @var [string]			main_match		Logic for what folders will be included in the renaming process.
 
 # Rename the file being processed? False for a test run.
-rename_status=false
+rename_status=true
 
 # Reset file permissions? False to skip the option.
 reset_perms=false
 
 # Full file path to process.
 declare -a path=(
-	'/home/serverm/Downloads/00 Scripts/'
+	'your-folder-path-here'
 )
 
 # Default folder regex:  *[*]*
