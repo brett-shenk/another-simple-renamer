@@ -3,7 +3,7 @@
 # @package 		    Another Simple Renamer
 # 
 # @author			Brett Shenk
-# @version			0.8.0
+# @version			0.8.1
 # @license			Creative Commons Attribution 4.0  https://choosealicense.com/licenses/cc-by-4.0/
 # @copyright		2024
 #
@@ -35,7 +35,6 @@ do
 
 	# Reset video permissions.
 	if $reset_perms; then
-		echo "$single_folder"
 		chmod 0777 -R ./*
 		sudo chown nobody:users /*
 	fi
@@ -163,6 +162,7 @@ do
 					echo "Folder already exists with the new name. Skipped: " "$main_folder"
 				else
 					if $rename_status; then
+						cd "$single_folder"
 						mv "$main_folder" "$new_show_name"
 						cd "$new_show_name"
 					else
@@ -280,8 +280,10 @@ do
 						echo "Folder already exists with the new name. Skipped: " "$main_folder"
 					else
 						if $rename_status; then
+							cd "$single_folder"
 							mv "$main_folder" "$new_show_name"
 							cd "$new_show_name"
+							cd "$season_folder"
 						else
 							echo "$new_show_name"
 						fi

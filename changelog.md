@@ -4,7 +4,12 @@ Version - Date (YYYY-MM-DD)
 
 <br>
 
-## 0.8.0 (2024-05-00)
+## 0.8.1 (2024-05-05)
+- Fix main folder rename not working.
+
+<br>
+
+## 0.8.0 (2024-05-05)
 - Add changelog.
 - Update readme.
 - Update comments.
