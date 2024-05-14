@@ -63,15 +63,21 @@ Type the name of the script, below, in a terminal. Need to be in the folder that
 Open the script, it contains the following variables.
 
 <dl>
-	<dt>rename_status</dt>
-	<dd>Mostly for development / testing. Should the files be renamed? [true, false]</dd>
+	<dt>$rename_status</dt>
+	<dd>Set to false to test the result. Set to true to rename. [true, false]</dd>
 	<dd>Boolean</dd>
-	<dt>path</dt>
+	<dt>$path</dt>
 	<dd>The full folder paths to be searched.</dd>
 	<dd>array | string</dd>
-	<dt>main_match</dt>
+	<dt>$main_match</dt>
 	<dd>Regex for folders that will be included in the renaming process.</dd>
 	<dd>string</dd>
+	<dt>$reset_perms</dt>
+	<dd>Weather the video permissions are reset to allow full access. [true, false] Want different permissions? Here's a <a href="https://linuxhandbook.com/linux-file-permissions/#using-chmod-in-absolute-mode" target="_blank">link that should help</a>.</dd>
+	<dd>Boolean</dd>
+	<dt>$reset_owner</dt>
+	<dd>Weather the video's owner is reset to the default, nobody. [true, false]</dd>
+	<dd>Boolean</dd>
 </dl>
 
 <br>

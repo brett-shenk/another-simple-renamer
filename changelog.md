@@ -4,6 +4,16 @@ Version - Date (YYYY-MM-DD)
 
 <br>
 
+## 0.8.2 (2024-05-13)
+- Separate permissions and owner to be separate settings.
+- relocate echo for testing purposes.
+- skip main folder if it happens to get included. `./`
+- Add comment about how to include all folders.
+- Update readme
+- Update comments
+
+<br>
+
 ## 0.8.1 (2024-05-05)
 - Fix main folder rename not working.
 

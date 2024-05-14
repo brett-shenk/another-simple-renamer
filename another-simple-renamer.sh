@@ -7,24 +7,29 @@
 # @license			Creative Commons Attribution 4.0  https://choosealicense.com/licenses/cc-by-4.0/
 # @copyright		2024
 #
-# @var [bool] 			rename_status	Rename video files or run a test run and log all effected files. [true, false]
-# @var [bool]			reset_perms		Reset permissions for the files in the folder paths. [true, false]
-# @var [array|string] 	path			The folder paths to be searched.
-# @var [string]			main_match		Logic for what folders will be included in the renaming process.
+# @var [bool] 			$rename_status	Rename video files or run a test run and log all effected files. [true, false]
+# @var [array|string] 	$path			The folder paths to be searched.
+# @var [string]			$main_match		Logic for what folders will be included in the renaming process.
+# @var [bool]			$reset_perms	Reset permissions for the videos in the folder paths. [true, false]
+# @var [bool]			$reset_owner	Reset the owner for the videos in the folder paths. [true, false]
 
 # Rename the file being processed? False for a test run.
 rename_status=true
-
-# Reset file permissions? False to skip the option.
-reset_perms=false
 
 # Full file path to process.
 declare -a path=(
 	'your-folder-path-here'
 )
 
-# Default folder regex:  *[*]*
+# To include all folders: "(.{1,})"
+# Default folder regex:   *[*]*
 main_match="((.{1,})?\[.{1,}\](.{1,})?)"
+
+# Reset file permissions? False to skip.
+reset_perms=false
+
+# Reset file owner? False to skip.
+reset_owner=false
 
 echo 
 
@@ -36,6 +41,10 @@ do
 	# Reset video permissions.
 	if $reset_perms; then
 		chmod 0777 -R ./*
+	fi
+
+	# Reset video owner.
+	if $reset_owner; then
 		sudo chown nobody:users /*
 	fi
 
@@ -43,6 +52,11 @@ do
 	# By default, if missing, it's assumed to already be done.
 	find ./ -maxdepth 1 -type d -regextype posix-extended -regex "$main_match" -print0 | 
 	while read -d $'\0' main_folder; do
+
+		# Skip main folder
+		if [[ "$main_folder" = "./" ]]; then
+			continue
+		fi
 
 		folder_char="./"		# Character removal
 		result="${main_folder//$folder_char}"
@@ -167,6 +181,7 @@ do
 						cd "$new_show_name"
 					else
 						echo "$new_show_name"
+						echo
 					fi
 				fi
 			fi
@@ -286,6 +301,7 @@ do
 							cd "$season_folder"
 						else
 							echo "$new_show_name"
+							echo
 						fi
 					fi
 				fi
@@ -298,10 +314,6 @@ do
 
 		# Change back to root directory of the array.
 		cd ../
-
-		if ! $rename_status; then
-			echo
-		fi
 
 	done
 done
