@@ -35,6 +35,7 @@ While Plex is the expected platform to be used, support for others like Kodi nee
 - [x] Check new file name doesn't already exist first and it's not currently in use.
   - [x] Make sure series folder isn't renamed if a file in it is in use.
 - [x] Option to reset file permissions and owner.
+- [x] Option to move completed files to a new folder.
 
 <br>
 
@@ -44,7 +45,6 @@ While Plex is the expected platform to be used, support for others like Kodi nee
   - [ ] Emby
   - [ ] Jellyfin
 - [ ] support renaming subtitle files.
-- [ ] Option to move completed files to a new folder.
 - [ ] TV Show episodes split across multiple files.
 - [ ] TV Show multiple episodes in a single file.
 - [ ] Multi-edition movies?
@@ -60,24 +60,30 @@ Type the name of the script, below, in a terminal. Need to be in the folder that
 
 <br>
 
-Open the script, it contains the following variables.
+Open the script, it contains the following variables:
 
 <dl>
 	<dt>$rename_status</dt>
-	<dd>Set to false to test the result. Set to true to rename. [true, false]</dd>
-	<dd>Boolean</dd>
+	<dd>Set to false to test the results. Set to true to rename.</dd>
+	<dd>Boolean. [true, false]</dd>
 	<dt>$path</dt>
-	<dd>The full folder paths to be searched.</dd>
-	<dd>array | string</dd>
+	<dd>The full folder paths to be searched. Key is only required if the mover is enabled. When both options are enabled the key in the $path gets compared to the key in the $mover_path.</dd>
+	<dd>array</dd>
+	<dt>$mover_status</dt>
+	<dd>Enable or disable moving the video files as the last step.</dd>
+	<dd>Boolean. [true, false]</dd>
+	<dt>$mover_path</dt>
+	<dd>Only required if $mover_status is set to true. See example below.</dd>
+	<dd>array</dd>
 	<dt>$main_match</dt>
 	<dd>Regex for folders that will be included in the renaming process.</dd>
 	<dd>string</dd>
 	<dt>$reset_perms</dt>
-	<dd>Weather the video permissions are reset to allow full access. [true, false] Want different permissions? Here's a <a href="https://linuxhandbook.com/linux-file-permissions/#using-chmod-in-absolute-mode" target="_blank">link that should help</a>.</dd>
-	<dd>Boolean</dd>
+	<dd>Weather the video permissions are reset to allow full access. Want different permissions? Here's a <a href="https://linuxhandbook.com/linux-file-permissions/#using-chmod-in-absolute-mode" target="_blank">link that should help</a>.</dd>
+	<dd>Boolean. [true, false]</dd>
 	<dt>$reset_owner</dt>
-	<dd>Weather the video's owner is reset to the default, nobody. [true, false]</dd>
-	<dd>Boolean</dd>
+	<dd>Weather the video's owner is reset to the default, nobody.</dd>
+	<dd>Boolean. [true, false]</dd>
 </dl>
 
 <br>
@@ -105,6 +111,18 @@ Open the script, it contains the following variables.
 			/Season 2003
 				Mythbusters - S2003e01.mkv
 				Mythbusters - S2003e02.mkv
+
+In the example below, the "dub" in $path will get moved to the $mover_path with "dub". Same for the "sub".
+
+	declare -A path=(
+		["dub"]="/mnt/user/download/anime-dub/", 
+		["sub"]="/mnt/user/download/anime-sub/"
+	)
+
+	declare -A mover_path=(
+		["dub"]="/mnt/user/media/anime-dub/", 
+		["sub"]="/mnt/user/media/anime-sub/"
+	)
 
 <br>
 

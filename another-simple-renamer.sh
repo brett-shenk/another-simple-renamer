@@ -3,27 +3,38 @@
 # @package 		    Another Simple Renamer
 # 
 # @author			Brett Shenk
-# @version			0.8.1
+# @version			0.9.0
 # @license			Creative Commons Attribution 4.0  https://choosealicense.com/licenses/cc-by-4.0/
 # @copyright		2024
 #
-# @var [bool] 			$rename_status	Rename video files or run a test run and log all effected files. [true, false]
-# @var [array|string] 	$path			The folder paths to be searched.
+# @var [bool] 			$rename_status	Rename video files or run a test run and log all effected files.
+# @var [array] 			$path			The folder paths to be searched. Key is only required if mover is enabled.
+# @var [bool]			$mover_status	Weather to move the video files after being renamed.
+# @var [array]			$mover_path		Where to move the newly renamed video files. Required if mover_status is true.
 # @var [string]			$main_match		Logic for what folders will be included in the renaming process.
-# @var [bool]			$reset_perms	Reset permissions for the videos in the folder paths. [true, false]
-# @var [bool]			$reset_owner	Reset the owner for the videos in the folder paths. [true, false]
+# @var [bool]			$reset_perms	Reset permissions for the videos in the folder paths.
+# @var [bool]			$reset_owner	Reset the owner for the videos in the folder paths.
 
 # Rename the file being processed? False for a test run.
-rename_status=true
+rename_status=false
 
 # Full file path to process.
-declare -a path=(
-	'your-folder-path-here'
+declare -A path=(
+	["dub"]="/home/darth-igras/Downloads/00_test/0-one/"
+)
+
+# Move the files after being processed? False to skip.
+mover_status=false
+
+# Mover Output Location(s)
+declare -A mover_path=(
+	["dub"]="/home/darth-igras/Downloads/00_test/1-two/"
 )
 
 # To include all folders: "(.{1,})"
 # Default folder regex:   *[*]*
-main_match="((.{1,})?\[.{1,}\](.{1,})?)"
+# main_match="((.{1,})?\[.{1,}\](.{1,})?)"
+main_match="(.{1,})"
 
 # Reset file permissions? False to skip.
 reset_perms=false
@@ -33,9 +44,16 @@ reset_owner=false
 
 echo 
 
+
+
 # Loop over all paths in the array one at a time and change to it's directory.
-for single_folder in "${path[@]}"
+for folder_key in ${!path[@]}
 do
+	single_folder="${path[${folder_key}]}"
+
+	folder_char="/,"		# Character removal
+	single_folder="${single_folder//$folder_char}"
+
    	cd "$single_folder"
 
 	# Reset video permissions.
@@ -48,6 +66,8 @@ do
 		sudo chown nobody:users /*
 	fi
 
+
+
 	# Folders matching the variable:  $main_match
 	# By default, if missing, it's assumed to already be done.
 	find ./ -maxdepth 1 -type d -regextype posix-extended -regex "$main_match" -print0 | 
@@ -56,6 +76,21 @@ do
 		# Skip main folder
 		if [[ "$main_folder" = "./" ]]; then
 			continue
+		fi
+
+		# Match mover_path with path if enabled.
+		if $mover_status; then
+			for mover_key in ${!mover_path[@]}
+			do
+				if [[ "${mover_key}" == "${folder_key}" ]]; then
+					move_folder="${mover_path[${mover_key}]}"
+
+					folder_char="/,"		# Character removal
+					move_folder="${move_folder//$folder_char}"
+				fi
+			done
+		else
+			move_folder=""
 		fi
 
 		folder_char="./"		# Character removal
@@ -79,6 +114,8 @@ do
 		leading_zero_fill (){
 			printf "%0$1d\\n" "$2"
 		}
+
+
 
 		# Get all video files in the main folder. Not seasons.
 		find ./ -maxdepth 1 -type f \( -iname '*.mp4' -o -iname '.mov' -o -iname '*.avi' -o -iname '*.wmv' -o -iname '*.flv' -o -iname '*.f4v' -o -iname '*.mkv' -o -iname '*.webm' -o -iname '*.m4v' -o -iname '*.3gp' -o -iname '*.3g2' -o -iname '*.ogv' -o -iname '*.vob' -o -iname '*.avchd' -o -iname '*.mpg' -o -iname '*.mpeg2' -o -iname '*.mxf' \) -print0 | 
@@ -122,9 +159,10 @@ do
 			folder_char="./"	# Character removal
 			line="${line//$folder_char}"
 
+			((episode_numb++))
+
 			# Is this a tv show?
 			if $is_tv_show; then
-				((episode_numb++))
 
 				# Episode count leading zero fill.
 				if [[ "$video_count" -le "9999" ]]; then
@@ -174,11 +212,19 @@ do
 			if [[ "$episode_numb" = "$video_count" && $check_movie_miniseries = "true" ]]; then
 				if [[ -d "$new_show_name" ]]; then
 					echo "Folder already exists with the new name. Skipped: " "$main_folder"
+					echo 
 				else
 					if $rename_status; then
-						cd "$single_folder"
-						mv "$main_folder" "$new_show_name"
-						cd "$new_show_name"
+						show_name='./'"$new_show_name"
+						if [[ "$main_folder" != "$show_name" ]]; then
+							cd "$single_folder"
+							mv "$main_folder" "$new_show_name"
+						fi
+
+						if $mover_status; then
+							cd "$single_folder"
+							mv "$new_show_name" "$move_folder"
+						fi
 					else
 						echo "$new_show_name"
 						echo
@@ -186,6 +232,7 @@ do
 				fi
 			fi
 		done # end show search
+
 
 
 		# Does the folder contain sub folders labeled like:  Season
@@ -293,12 +340,19 @@ do
 				if [[ "$episode_numb" = "$video_count" && $check_season = "true" && "$total_season_count" = "$season_numb" ]]; then
 					if [[ -d "$new_show_name" ]]; then
 						echo "Folder already exists with the new name. Skipped: " "$main_folder"
+						echo
 					else
 						if $rename_status; then
-							cd "$single_folder"
-							mv "$main_folder" "$new_show_name"
-							cd "$new_show_name"
-							cd "$season_folder"
+							show_name='./'"$new_show_name"
+							if [[ "$main_folder" != "$show_name" ]]; then
+								cd "$single_folder"
+								mv "$main_folder" "$new_show_name"
+							fi
+
+							if $mover_status; then
+								cd "$single_folder"
+								mv "$new_show_name" "$move_folder"
+							fi
 						else
 							echo "$new_show_name"
 							echo
@@ -313,7 +367,7 @@ do
 		done #end season search
 
 		# Change back to root directory of the array.
-		cd ../
+		cd "$single_folder"
 
 	done
 done

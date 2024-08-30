@@ -4,6 +4,17 @@ Version - Date (YYYY-MM-DD)
 
 <br>
 
+## 0.9.0 (2024-08-30)
+- Convert `$path` array to associative array.
+- Loop over the `$path` keys instead. Then get the value for the current key.
+- Add support for multiple output folders. The `$mover_path` and `$path` keys are compared together for where it should get moved to.
+- Fix issue with changing directories that were created from implementing the mover.
+- Check if the video folder should to be renamed or moved before doing so.
+- update script console output.
+- Fix issue with TV Show episode counter not properly updating.
+- Update script comments.
+- Update readme.
+
 ## 0.8.2 (2024-05-13)
 - Separate permissions and owner to be separate settings.
 - relocate echo for testing purposes.
