@@ -44,17 +44,29 @@ While Plex is the expected platform to be used, support for others like Kodi nee
   - [ ] Kodi
   - [ ] Emby
   - [ ] Jellyfin
-- [ ] support renaming subtitle files.
 - [ ] TV Show episodes split across multiple files.
 - [ ] TV Show multiple episodes in a single file.
 - [ ] Multi-edition movies?
 - [ ] Multi-version movies?
+- [ ] support renaming subtitle files. Supports the following subtitle types:
+  - srt, sbv, sub, aaf, vtt, mxf, ass, asc, ssa, cap, ttml, cin, smi, onl, stl
+  - ult, pac, sami, xml, txt, idx, dvb, itt, mcc, dfxp, scc, pgs
+- [ ] Detect episode count from file name
+  - Show Name - S01E01 - Episode Title
+  - 01 Episode Title
+  - E01 Episode Title
+  - 01 - Episode Title
+  - E01 - Episode Title
+  - S01E01 - Episode Title
+  - S01 E01 - Episode Title
+  - 02-01 - Episode Title
+  - 02 01 - Episode Title
 
 <br>
 
 ## Usage
 
-Type the name of the script, below, in a terminal. Need to be in the folder that contains the script.
+First, right click the script file and select properties. Then select permissions. Make sure allow executing file as program is checked. Then type the name of the script, below, in a terminal. Need to be in the folder that contains the script.
 
 `./another-simple-renamer.sh`
 

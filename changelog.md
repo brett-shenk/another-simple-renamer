@@ -4,6 +4,17 @@ Version - Date (YYYY-MM-DD)
 
 <br>
 
+## 0.10.0 (2024-11-17)
+- Support for Windows.
+  - At the moment, skips checking if the video file is currently in use.
+- Update script console output to always output something.
+- Fix bug with changelog format.
+- Indicate where to edit.
+- Add comment of some examples for what season folders are matched.
+- Remove duplicate code by reformatting the core work to be a function.
+
+<br>
+
 ## 0.9.0 (2024-08-30)
 - Convert `$path` array to associative array.
 - Loop over the `$path` keys instead. Then get the value for the current key.
@@ -14,6 +25,8 @@ Version - Date (YYYY-MM-DD)
 - Fix issue with TV Show episode counter not properly updating.
 - Update script comments.
 - Update readme.
+
+<br>
 
 ## 0.8.2 (2024-05-13)
 - Separate permissions and owner to be separate settings.
